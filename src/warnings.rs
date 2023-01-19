@@ -18,7 +18,7 @@ strike! {
     pub struct Warnings
     {
         /// All the guilds with users that have warnings
-        guilds: Vec<pub struct GuildWarnings
+        pub guilds: Vec<pub struct GuildWarnings
         {
             /// The guild's ID
             pub id: GuildId,
