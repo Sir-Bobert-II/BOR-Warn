@@ -66,7 +66,7 @@ impl ToString for UserWarnings
     fn to_string(&self) -> String
     {
         let mut buffer = format!(
-            "User {} has {} warnings",
+            "User {} has {} warning(s)",
             self.user.name, self.warning_count,
         );
 
@@ -76,7 +76,7 @@ impl ToString for UserWarnings
 
             for (i, warning) in self.warnings.clone().iter().enumerate()
             {
-                buffer.push_str(&format!("Warning {}: {}\n", i, warning.reason));
+                buffer.push_str(&format!("Warning {}: {}\n", i+1, warning.reason));
             }
         }
 
