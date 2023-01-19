@@ -76,7 +76,7 @@ impl ToString for UserWarnings
 
             for (i, warning) in self.warnings.clone().iter().enumerate()
             {
-                buffer.push_str(&format!("Warning {}: {}\n", i, warning.reason));
+                buffer.push_str(&format!("{}: {}\n", i +1, warning.reason));
             }
         }
 
@@ -178,7 +178,7 @@ impl Warnings
         let user_pos = match guild_warnings
             .users
             .iter()
-            .position(|u| u.user.id.to_string() == user.to_string())
+            .position(|u| u.user.id.to_string() == user.id.to_string())
         {
             Some(x) => x,
 
