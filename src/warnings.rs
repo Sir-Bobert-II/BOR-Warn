@@ -1,11 +1,5 @@
-
-
 use serde_derive::*;
-use serenity::{
-    model::{
-        prelude::{GuildId, User},
-    },
-};
+use serenity::model::prelude::{GuildId, User};
 use std::{
     fs::{self, create_dir_all, read_to_string},
     path::PathBuf,
@@ -76,7 +70,7 @@ impl ToString for UserWarnings
 
             for (i, warning) in self.warnings.clone().iter().enumerate()
             {
-                buffer.push_str(&format!("Warning {}: {}\n", i+1, warning.reason));
+                buffer.push_str(&format!("Warning {}: {}\n", i + 1, warning.reason));
             }
         }
 
