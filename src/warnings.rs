@@ -21,22 +21,22 @@ strike! {
         guilds: Vec<pub struct GuildWarnings
         {
             /// The guild's ID
-            id: GuildId,
+            pub id: GuildId,
 
             /// All the users with warnings in the guild
-            users: Vec<pub struct UserWarnings
+            pub users: Vec<pub struct UserWarnings
             {
                 /// The user
-                user: User,
+                pub user: User,
 
                 /// How many warnings the user has
-                warning_count: u32,
+                pub warning_count: u32,
 
                 /// An array of warnings
-                warnings: Vec<pub struct Warning
+                pub warnings: Vec<pub struct Warning
                 {
                     /// Reason for the warning
-                    reason: String,
+                    pub reason: String,
                 }>
 
             }>
