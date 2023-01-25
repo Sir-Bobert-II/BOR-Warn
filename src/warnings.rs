@@ -37,6 +37,9 @@ strike! {
                 {
                     /// Reason for the warning
                     pub reason: String,
+
+                    /// When the warning was given
+                    pub when: chrono::DateTime,
                 }>
 
             }>
