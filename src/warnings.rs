@@ -1,17 +1,11 @@
-
-
+use chrono::Utc;
 use serde_derive::*;
-use serenity::{
-    model::{
-        prelude::{GuildId, User},
-    },
-};
+use serenity::model::prelude::{GuildId, User};
 use std::{
     fs::{self, create_dir_all, read_to_string},
     path::PathBuf,
 };
 use structstruck::strike;
-use chrono::Utc;
 
 strike! {
     #[strikethrough[derive(Serialize,Deserialize, Debug, Clone, Default, PartialEq,)]]
@@ -40,7 +34,7 @@ strike! {
                     pub reason: String,
 
                     /// When the warning was given (UTC)
-                    pub when: chrono::DateTime,
+                    pub when: chrono::DateTime<Utc>,
                 }>
 
             }>
@@ -54,8 +48,10 @@ impl Warning
     /// Create a new warning
     pub fn new(reason: String) -> Self
     {
-        
-        Self { reason, when: Utc::now() } 
+        Self {
+            reason,
+            when: Utc::now(),
+        }
     }
 }
 
@@ -141,7 +137,7 @@ impl Warnings
             let ret = match serde_json::from_str(&s)
             {
                 Ok(x) => x,
-                Err(x) => return Err(format!("Error: {}", x)),
+                Err(x) => return Err(format!("Error: {x}")),
             };
             Ok(ret)
         }
@@ -155,7 +151,7 @@ impl Warnings
     }
 
     /// Add a new warning to a user
-    pub fn add_warning(&mut self, guild_id: &GuildId, user: User, reason: String) -> &mut self
+    pub fn add_warning(&mut self, guild_id: &GuildId, user: User, reason: String) -> &mut Self
     {
         // Search for where the guild we're looking for is
         let guild_pos = match self
@@ -212,7 +208,7 @@ impl Warnings
         self
     }
 
-    pub fn count_warnings(&self, guild_id: &GuildId, user:User) -> u32
+    pub fn count_warnings(&mut self, guild_id: &GuildId, user: User) -> u32
     {
         // Search for where the guild we're looking for is
         let guild_pos = match self
