@@ -11,6 +11,7 @@ use std::{
     path::PathBuf,
 };
 use structstruck::strike;
+use chrono::Utc;
 
 strike! {
     #[strikethrough[derive(Serialize,Deserialize, Debug, Clone, Default, PartialEq,)]]
@@ -38,7 +39,7 @@ strike! {
                     /// Reason for the warning
                     pub reason: String,
 
-                    /// When the warning was given
+                    /// When the warning was given (UTC)
                     pub when: chrono::DateTime,
                 }>
 
@@ -50,7 +51,12 @@ strike! {
 
 impl Warning
 {
-    pub fn new(reason: String) -> Self { Self { reason } }
+    /// Create a new warning
+    pub fn new(reason: String) -> Self
+    {
+        
+        Self { reason, when: Utc::now() } 
+    }
 }
 
 impl GuildWarnings
@@ -79,7 +85,7 @@ impl ToString for UserWarnings
 
             for (i, warning) in self.warnings.clone().iter().enumerate()
             {
-                buffer.push_str(&format!("{}: {}\n", i +1, warning.reason));
+                buffer.push_str(&format!("{}: {}\n", i + 1, warning.reason));
             }
         }
 
@@ -149,7 +155,7 @@ impl Warnings
     }
 
     /// Add a new warning to a user
-    pub fn add_warning(&mut self, guild_id: &GuildId, user: User, reason: String)
+    pub fn add_warning(&mut self, guild_id: &GuildId, user: User, reason: String) -> &mut self
     {
         // Search for where the guild we're looking for is
         let guild_pos = match self
@@ -203,6 +209,57 @@ impl Warnings
             .push(Warning::new(reason));
         // Increment the warning counter
         self.guilds[guild_pos].users[user_pos].warning_count += 1;
+        self
+    }
+
+    pub fn count_warnings(&self, guild_id: &GuildId, user:User) -> u32
+    {
+        // Search for where the guild we're looking for is
+        let guild_pos = match self
+            .guilds
+            .clone()
+            .iter()
+            .position(|g| g.id.to_string() == guild_id.to_string())
+        {
+            Some(x) => x,
+
+            // Create a new guild struct and push it
+            None =>
+            {
+                // Creae a new guild struct and push the user to it
+                let new_guild = GuildWarnings::new(*guild_id);
+
+                // Add the guild to the record
+                self.guilds.push(new_guild);
+
+                // Return the index to last item in the array. This should be the
+                // guild we just pushed.
+                self.guilds.len() - 1
+            }
+        };
+
+        // Search for where our user is
+        let user_pos = match self.guilds[guild_pos]
+            .users
+            .iter()
+            .position(|u| u.user.id.to_string() == user.id.to_string())
+        {
+            Some(x) => x,
+
+            // Create a new user and push it
+            None =>
+            {
+                // Create a new `UserWarnings` and push the warning to it
+                let new_user = UserWarnings::new(user);
+
+                // Push the `UserWarnings` to the guild.
+                self.guilds[guild_pos].users.push(new_user);
+                self.guilds[guild_pos].users.len() - 1
+            }
+        };
+
+        // Push the warning
+        self.guilds[guild_pos].users[user_pos].warning_count
     }
 
     /// Get a vector of a user's warnings
