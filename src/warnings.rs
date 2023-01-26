@@ -151,7 +151,7 @@ impl Warnings
     }
 
     /// Add a new warning to a user
-    pub fn add_warning(&mut self, guild_id: &GuildId, user: User, reason: String) -> &mut Self
+    pub fn add_warning(&mut self, guild_id: &GuildId, user: &User, reason: String) -> &mut Self
     {
         // Search for where the guild we're looking for is
         let guild_pos = match self
@@ -191,7 +191,7 @@ impl Warnings
             None =>
             {
                 // Create a new `UserWarnings` and push the warning to it
-                let new_user = UserWarnings::new(user);
+                let new_user = UserWarnings::new(user.clone());
 
                 // Push the `UserWarnings` to the guild.
                 self.guilds[guild_pos].users.push(new_user);
@@ -208,7 +208,7 @@ impl Warnings
         self
     }
 
-    pub fn count_warnings(&mut self, guild_id: &GuildId, user: User) -> u32
+    pub fn count_warnings(&mut self, guild_id: &GuildId, user: &User) -> u32
     {
         // Search for where the guild we're looking for is
         let guild_pos = match self
@@ -246,7 +246,7 @@ impl Warnings
             None =>
             {
                 // Create a new `UserWarnings` and push the warning to it
-                let new_user = UserWarnings::new(user);
+                let new_user = UserWarnings::new(user.clone());
 
                 // Push the `UserWarnings` to the guild.
                 self.guilds[guild_pos].users.push(new_user);
